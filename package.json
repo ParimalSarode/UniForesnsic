@@ -1,0 +1,319 @@
+{
+  "name": "ralph-loop-antigravity",
+  "displayName": "Ralph Loop for Antigravity",
+  "description": "An autonomous AI agent extension for Antigravity — automates multi-step coding tasks with iterative loop execution, file-based memory, and backpressure validation.",
+  "icon": "resources/icons/logo.png",
+  "version": "0.1.0",
+  "publisher": "GindaChen",
+  "license": "MIT",
+  "repository": {
+    "type": "git",
+    "url": "https://github.com/GindaChen/ralph-loop-antigravity"
+  },
+  "bugs": {
+    "url": "https://github.com/GindaChen/ralph-loop-antigravity/issues"
+  },
+  "homepage": "https://github.com/GindaChen/ralph-loop-antigravity#readme",
+  "engines": {
+    "vscode": "^1.75.0"
+  },
+  "categories": [
+    "AI",
+    "Chat",
+    "Programming Languages"
+  ],
+  "extensionKind": [
+    "workspace"
+  ],
+  "main": "./out/extension.js",
+  "contributes": {
+    "commands": [
+      {
+        "command": "ralph.start",
+        "title": "Start Ralph Loop",
+        "category": "Ralph",
+        "icon": "$(play)"
+      },
+      {
+        "command": "ralph.stop",
+        "title": "Stop Ralph Loop",
+        "category": "Ralph",
+        "icon": "$(debug-stop)"
+      },
+      {
+        "command": "ralph.pause",
+        "title": "Pause/Resume Ralph Loop",
+        "category": "Ralph",
+        "icon": "$(debug-pause)"
+      },
+      {
+        "command": "ralph.emergency",
+        "title": "Emergency Stop Ralph Loop",
+        "category": "Ralph",
+        "icon": "$(error)"
+      },
+      {
+        "command": "ralph.selectTaskFile",
+        "title": "Select Task File",
+        "category": "Ralph",
+        "icon": "$(file)"
+      },
+      {
+        "command": "ralph.configureIterations",
+        "title": "Configure Iterations",
+        "category": "Ralph",
+        "icon": "$(settings-gear)"
+      },
+      {
+        "command": "ralph.setConfigMode",
+        "title": "Set Mode",
+        "category": "Ralph"
+      },
+      {
+        "command": "ralph.setConfigModel",
+        "title": "Set Model",
+        "category": "Ralph"
+      },
+      {
+        "command": "ralph.setConfigPromptFile",
+        "title": "Set Prompt File",
+        "category": "Ralph"
+      },
+      {
+        "command": "ralph.setConfigTaskFile",
+        "title": "Set Task File",
+        "category": "Ralph"
+      },
+      {
+        "command": "ralph.toggleUseGit",
+        "title": "Toggle Use Git",
+        "category": "Ralph"
+      },
+      {
+        "command": "ralph.toggleCreateBranchEverySession",
+        "title": "Toggle Create Branch Every Session",
+        "category": "Ralph"
+      },
+      {
+        "command": "ralph.reportBug",
+        "title": "Report a Bug",
+        "category": "Ralph",
+        "icon": "$(bug)"
+      },
+      {
+        "command": "ralph.toggleDebugLogging",
+        "title": "Toggle Debug Logging",
+        "category": "Ralph",
+        "icon": "$(debug)"
+      }
+    ],
+    "menus": {
+      "view/title": [
+        {
+          "command": "ralph.start",
+          "when": "view == ralphLoopView && !ralph.isRunning",
+          "group": "navigation@1"
+        },
+        {
+          "command": "ralph.pause",
+          "when": "view == ralphLoopView && ralph.isRunning",
+          "group": "navigation@2"
+        },
+        {
+          "command": "ralph.stop",
+          "when": "view == ralphLoopView && ralph.isRunning",
+          "group": "navigation@3"
+        }
+      ]
+    },
+    "viewsContainers": {
+      "activitybar": [
+        {
+          "id": "ralph-loop-container",
+          "title": "Ralph Loop",
+          "icon": "resources/icons/logo.svg"
+        }
+      ]
+    },
+    "views": {
+      "ralph-loop-container": [
+        {
+          "id": "ralphLoopView",
+          "name": "Ralph Loop",
+          "icon": "resources/icons/logo.svg"
+        },
+        {
+          "id": "ralphHelpView",
+          "name": "Help & Feedback",
+          "icon": "resources/icons/logo.svg"
+        }
+      ]
+    },
+    "configuration": {
+      "title": "Ralph Loop",
+      "properties": {
+        "ralphLoop.maxIterations": {
+          "type": "integer",
+          "default": 50,
+          "minimum": 1,
+          "maximum": 1000,
+          "description": "Default maximum number of iterations for Ralph Loop"
+        },
+        "ralphLoop.defaultMode": {
+          "type": "string",
+          "enum": [
+            "Fast",
+            "Planning"
+          ],
+          "default": "Fast",
+          "description": "Default mode for Ralph Loop sessions"
+        },
+        "ralphLoop.defaultModel": {
+          "type": "string",
+          "default": "Gemini 3 Flash",
+          "description": "Default AI model for Ralph Loop sessions. Available models are loaded dynamically from the model registry."
+        },
+        "ralphLoop.modelRegistryUrl": {
+          "type": "string",
+          "default": "",
+          "description": "URL to a remote models.json file. When set, the extension will fetch the model list from this URL on startup. Leave empty to use the bundled model list."
+        },
+        "ralphLoop.promptFile": {
+          "type": "string",
+          "default": "",
+          "description": "Optional prompt file name (e.g., PROMPT.md). Leave empty to skip prompt injection."
+        },
+        "ralphLoop.taskFile": {
+          "type": "string",
+          "default": "PRD.md",
+          "description": "Default task file for tracking progress (e.g., PRD.md, TASKS.md)"
+        },
+        "ralphLoop.progressFile": {
+          "type": "string",
+          "default": "progress.txt",
+          "description": "Default progress file for tracking completed work"
+        },
+        "ralphLoop.testCommand": {
+          "type": "string",
+          "default": "npm run test",
+          "description": "Command to run tests for backpressure validation"
+        },
+        "ralphLoop.lintCommand": {
+          "type": "string",
+          "default": "npm run lint",
+          "description": "Command to run linter for backpressure validation"
+        },
+        "ralphLoop.buildCommand": {
+          "type": "string",
+          "default": "npm run build",
+          "description": "Command to run build for backpressure validation"
+        },
+        "ralphLoop.packageCommand": {
+          "type": "string",
+          "default": "",
+          "description": "Command to run packaging (e.g., vsce package) for backpressure validation"
+        },
+        "ralphLoop.enabledBackpressure": {
+          "type": "array",
+          "items": {
+            "type": "string",
+            "enum": [
+              "test",
+              "lint",
+              "build",
+              "package"
+            ]
+          },
+          "default": [],
+          "description": "Which backpressure commands to run after each iteration. Empty by default — enable as needed."
+        },
+        "ralphLoop.useGit": {
+          "type": "boolean",
+          "default": true,
+          "description": "Auto-commit changes after each iteration"
+        },
+        "ralphLoop.createBranchEverySession": {
+          "type": "boolean",
+          "default": false,
+          "description": "Create a new git branch for each Ralph Loop session"
+        },
+        "ralphLoop.notifications.enabled": {
+          "type": "boolean",
+          "default": true,
+          "description": "Enable notifications for loop completion and errors"
+        },
+        "ralphLoop.notifications.onCompletion": {
+          "type": "boolean",
+          "default": true,
+          "description": "Show notification when Ralph Loop completes successfully"
+        },
+        "ralphLoop.notifications.onError": {
+          "type": "boolean",
+          "default": true,
+          "description": "Show notification when Ralph Loop encounters an error"
+        },
+        "ralphLoop.notifications.onStop": {
+          "type": "boolean",
+          "default": true,
+          "description": "Show notification when Ralph Loop is stopped"
+        },
+        "ralphLoop.notifications.showProgressModal": {
+          "type": "boolean",
+          "default": false,
+          "description": "Show modal progress notifications (more intrusive but ensures visibility)"
+        },
+        "ralphLoop.notifications.includeStats": {
+          "type": "boolean",
+          "default": true,
+          "description": "Include iteration count and elapsed time in completion notifications"
+        },
+        "ralphLoop.antigravity.port": {
+          "type": "integer",
+          "default": 0,
+          "minimum": 0,
+          "maximum": 65535,
+          "description": "Antigravity local server port. Set to 0 for auto-discovery."
+        },
+        "ralphLoop.antigravity.csrfToken": {
+          "type": "string",
+          "default": "",
+          "description": "CSRF token from Antigravity DevTools Network tab (x-codeium-csrf-token header)"
+        },
+        "ralphLoop.antigravity.oauthToken": {
+          "type": "string",
+          "default": "",
+          "description": "OAuth token (ya29.xxx). Leave empty to attempt automatic extraction."
+        },
+        "ralphLoop.debugLogging": {
+          "type": "boolean",
+          "default": false,
+          "description": "Enable verbose debug logging in the Ralph Loop output channel"
+        }
+      }
+    }
+  },
+  "scripts": {
+    "vscode:prepublish": "npm run compile",
+    "compile": "tsc -p ./",
+    "watch": "tsc -watch -p ./",
+    "pretest": "npm run compile && npm run lint",
+    "lint": "eslint src --ext ts",
+    "test": "jest --config jest.config.js",
+    "test:unit": "jest --config jest.config.js --testPathPattern=test/unit",
+    "package": "vsce package"
+  },
+  "devDependencies": {
+    "@types/vscode": "^1.75.0",
+    "@types/node": "^22.0.0",
+    "@types/jest": "^29.5.0",
+    "@typescript-eslint/eslint-plugin": "^8.0.0",
+    "@typescript-eslint/parser": "^8.0.0",
+    "eslint": "^8.57.0",
+    "jest": "^29.7.0",
+    "ts-jest": "^29.1.0",
+    "typescript": "^5.0.0",
+    "@vscode/test-electron": "^2.4.0",
+    "@vscode/vsce": "^3.7.1",
+    "ts-node": "^10.9.2"
+  }
+}
