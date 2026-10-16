@@ -42,12 +42,13 @@
   - Implemented `uniforensic.parser.integrity`: Database header (Page 1) and freelist trunk/leaf page traverser.
   - Verified with 6 unit tests in `tests/test_parser.py`.
 
-- [ ] **Milestone 5: Structural Candidate Carver**
-  - Freeblock linked-list scanning.
-  - Unallocated space scanning within B-tree leaf pages.
-  - Freelist page residual payload carver.
-  - WAL frame uncommitted/checkpoint-overwritten carver.
-  - Candidate metadata model: byte offset, page_id, cell offset, region type, raw payload.
+- [x] **Milestone 5: Structural Candidate Carver**
+  - Implemented `uniforensic.carver.candidate`: `CandidateRecord` model tracking file offsets, page number, region type (FREEBLOCK, UNALLOCATED_SPACE, FREELIST_PAGE, WAL_FRAME, LIVE_CELL), diagnostics, and raw payload references.
+  - Implemented `uniforensic.carver.schema_matcher`: Type affinity and column structure compatibility matching.
+  - Implemented `uniforensic.carver.btree_carver`: Carves deleted cells and records from freeblock chains, page unallocated slack, and freelist leaf pages.
+  - Implemented `uniforensic.carver.wal_carver`: Carves records, freeblocks, and historical transactions from Write-Ahead Log frames.
+  - Verified defensive handling against masquerading freeblock headers and zeroed payloads under `secure_delete=1`.
+  - Verified with 3 integration tests in `tests/test_carver.py`.
 
 - [ ] **Milestone 6: Candidate Feature Extraction & Structural Baseline**
   - Structural consistency features (varint lengths, serial type sequence, declared vs available length, UTF-8 validity, timestamp plausibility, entropy, region type).

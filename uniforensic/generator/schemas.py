@@ -98,11 +98,42 @@ BROWSER_HISTORY_SCHEMA = TableSchema(
     """
 )
 
-SCHEMAS: Dict[str, TableSchema] = {
+SQLITE_SEQUENCE_SCHEMA = TableSchema(
+    name="sqlite_sequence",
+    columns=[
+        ColumnDef("name", "TEXT", nullable=False),
+        ColumnDef("seq", "INTEGER", nullable=False),
+    ],
+    create_sql="CREATE TABLE sqlite_sequence(name,seq);"
+)
+
+SQLITE_MASTER_SCHEMA = TableSchema(
+    name="sqlite_master",
+    columns=[
+        ColumnDef("type", "TEXT", nullable=False),
+        ColumnDef("name", "TEXT", nullable=False),
+        ColumnDef("tbl_name", "TEXT", nullable=False),
+        ColumnDef("rootpage", "INTEGER", nullable=False),
+        ColumnDef("sql", "TEXT", nullable=True),
+    ],
+    create_sql="CREATE TABLE sqlite_master(type TEXT, name TEXT, tbl_name TEXT, rootpage INTEGER, sql TEXT);"
+)
+
+USER_SCHEMAS: Dict[str, TableSchema] = {
     "messages": SMS_SCHEMA,
     "call_history": CALL_LOG_SCHEMA,
     "browser_history": BROWSER_HISTORY_SCHEMA,
 }
+
+ALL_SCHEMAS: Dict[str, TableSchema] = {
+    **USER_SCHEMAS,
+    "sqlite_sequence": SQLITE_SEQUENCE_SCHEMA,
+    "sqlite_master": SQLITE_MASTER_SCHEMA,
+}
+
+SCHEMAS = USER_SCHEMAS
+
+
 
 
 class SyntheticRecordFactory:
