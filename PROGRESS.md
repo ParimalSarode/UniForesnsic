@@ -50,10 +50,11 @@
   - Verified defensive handling against masquerading freeblock headers and zeroed payloads under `secure_delete=1`.
   - Verified with 3 integration tests in `tests/test_carver.py`.
 
-- [ ] **Milestone 6: Candidate Feature Extraction & Structural Baseline**
-  - Structural consistency features (varint lengths, serial type sequence, declared vs available length, UTF-8 validity, timestamp plausibility, entropy, region type).
-  - Strict prevention of ground-truth label leakage.
-  - Structural-only rule-based recovery baseline.
+- [x] **Milestone 6: Candidate Feature Extraction & Structural Baseline**
+  - Implemented `uniforensic.features.extractor`: 30 explainable SQLite structural features covering header validity, serial types, payload truncation, UTF-8 validity, timestamp plausibility, Shannon byte entropy, zero-byte fraction, schema compatibility, and storage regions.
+  - Ensured strict zero-leakage of ground-truth labels.
+  - Implemented `uniforensic.features.baseline_rules`: Deterministic `StructuralOnlyClassifier` enforcing SQLite invariants and heuristic constraints.
+  - Verified with 4 unit tests in `tests/test_features.py`.
 
 - [ ] **Milestone 7: Machine Learning Ranker & Probability Calibration**
   - Database-level cross-validation split (Train / Calibration / Validation / Test).
