@@ -53,8 +53,16 @@ class BTreeCarver:
         candidates: List[CandidateRecord] = []
         seen_hashes: Set[str] = set()
 
-        # Step 1: Carve all pages in database
+        # Identify freelist pages up front so they are not treated as active B-Tree pages
+        freelist_pages = set(get_freelist_leaf_pages(self.db_path, self.db_header))
+        if self.db_header.freelist_trunk_page > 0:
+            freelist_pages.add(self.db_header.freelist_trunk_page)
+
+        # Step 1: Carve active B-Tree pages in database
         for page_num in range(1, self.total_pages + 1):
+            if page_num in freelist_pages:
+                continue
+
             page_bytes = read_page(self.db_path, page_num, self.page_size)
             page = parse_btree_page(page_bytes, page_num)
 

@@ -187,6 +187,9 @@ def parse_record_payload(
             elif st.type_name == "FLOAT":
                 values.append(struct.unpack(">d", field_bytes)[0])
             elif st.type_name == "TEXT":
+                if b"\x00" in field_bytes:
+                    diagnostics.append(f"Embedded NUL character in TEXT field {idx}")
+                    is_valid = False
                 try:
                     text_val = field_bytes.decode(encoding, errors="strict")
                     values.append(text_val)

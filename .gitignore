@@ -12,4 +12,5 @@ __pycache__/
 artifacts/
 *.db-wal
 *.db-shm
-
+*.sqlite*
+temp_debug/
