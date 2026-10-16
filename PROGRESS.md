@@ -34,13 +34,13 @@
   - Implemented independent ground truth catalogs preventing label leakage.
   - Verified with 3 automated unit/integration tests in `tests/test_generator.py`.
 
-- [ ] **Milestone 4: Structural SQLite Page Parsing**
-  - SQLite 1-9 byte varint decoder with overflow checks.
-  - Serial type interpreter (0-9, 12+ even/odd string/blob lengths).
-  - B-tree page header parsing (leaf table, interior table, leaf index, interior index).
-  - Freelist trunk and leaf page navigation.
-  - WAL header and frame parsing (salt, checksum, page number).
-  - Strict buffer bounds checking and defensive parsing.
+- [x] **Milestone 4: Structural SQLite Page Parsing**
+  - Implemented `uniforensic.parser.varint`: 1-9 byte varint decoder/encoder with overflow protection and boundary limits.
+  - Implemented `uniforensic.parser.record`: Full serial-type decoder (NULL, INT 1-8B, FLOAT, TEXT, BLOB, RESERVED) and record payload parser with diagnostics.
+  - Implemented `uniforensic.parser.page`: B-tree page header parsing (0x02, 0x05, 0x0a, 0x0d), cell pointer array parser, freeblock linked-list traverser with cycle detection, unallocated space ranges.
+  - Implemented `uniforensic.parser.wal`: 32-byte WAL header parser, 24-byte frame header extractor with salt & checksum verification.
+  - Implemented `uniforensic.parser.integrity`: Database header (Page 1) and freelist trunk/leaf page traverser.
+  - Verified with 6 unit tests in `tests/test_parser.py`.
 
 - [ ] **Milestone 5: Structural Candidate Carver**
   - Freeblock linked-list scanning.
