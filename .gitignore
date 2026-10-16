@@ -3,3 +3,13 @@ node_modules/
 .vscode-test/
 *.vsix
 .DS_Store
+.venv/
+__pycache__/
+*.py[cod]
+*$py.class
+*.egg-info/
+.pytest_cache/
+artifacts/
+*.db-wal
+*.db-shm
+
