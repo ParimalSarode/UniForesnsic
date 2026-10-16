@@ -17,14 +17,22 @@
     - SQLite Forensic Corpus (FAU Erlangen-Nürnberg / Digital Corpora) identified on AWS S3 (`sqlite_forensic_corpus_v1.0.zip`).
   - Added `.gitignore` rules for Python and local venv.
 
-- [ ] **Milestone 2: Architecture & Acceptance Criteria**
-  - Define formal architecture, data contracts, and verification criteria.
-  - Establish SHA-256 evidence integrity protocol.
+- [x] **Milestone 2: Architecture & Acceptance Criteria**
+  - Defined modular package layout: `generator/`, `parser/`, `carver/`, `features/`, `models/`, `filter/`, `evaluation/`, `reporting/`.
+  - Created data models for `GroundTruthRecord` and `DatabaseGroundTruth`.
+  - Established cryptographic SHA-256 evidence hashing for evidence preservation.
 
-- [ ] **Milestone 3: Synthetic Forensic Database Generator & Ground Truth**
-  - SMS, Call Log, Browser History realistic schemas.
-  - Scenarios: Live, Deleted, Updated, Freeblock residual, Overwritten, WAL uncommitted/committed, Freelist, Anti-forensics (secure_delete=1 vs 0, auto_vacuum=0/1/2, journal_mode=DELETE/WAL).
-  - Ground truth catalog with independent cryptographic hashes and provenance (never leaked to features).
+- [x] **Milestone 3: Synthetic Forensic Database Generator & Ground Truth**
+  - Implemented realistic mobile forensic schemas: `messages` (SMS), `call_history` (calls), `browser_history` (web).
+  - Implemented scenario variations:
+    - Freeblock scattered deletions (B-tree leaf freeblocks).
+    - Freelist burst deletions (unallocated/freelist pages).
+    - In-place updates causing residual old payload slack.
+    - WAL uncheckpointed frames vs committed databases.
+    - Anti-forensics: `secure_delete=1` (overwritten/zeroed) vs `secure_delete=0` (recoverable).
+    - Auto-vacuum: `auto_vacuum=0` (freelist intact) vs `auto_vacuum=1` (truncated).
+  - Implemented independent ground truth catalogs preventing label leakage.
+  - Verified with 3 automated unit/integration tests in `tests/test_generator.py`.
 
 - [ ] **Milestone 4: Structural SQLite Page Parsing**
   - SQLite 1-9 byte varint decoder with overflow checks.
